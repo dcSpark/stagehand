@@ -7,6 +7,8 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "2048": "npm run build-dom-scripts && tsx examples/2048.ts",
+    "2048-custom": "npm run build-dom-scripts && tsx examples/2048_custom.ts",
+    "aave-loan": "npm run build-dom-scripts && tsx examples/aave_loan.ts",
     "popup": "npm run build-dom-scripts && tsx examples/popup.ts",
     "example": "npm run build-dom-scripts && tsx examples/example.ts",
     "debug-url": "npm run build-dom-scripts && tsx examples/debugUrl.ts",

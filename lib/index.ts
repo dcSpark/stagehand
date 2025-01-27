@@ -48,6 +48,8 @@ async function getBrowser(
   logger: (message: LogLine) => void,
   browserbaseSessionCreateParams?: Browserbase.Sessions.SessionCreateParams,
   browserbaseSessionID?: string,
+  executablePath?: string,
+  downloadPath?: string,
 ): Promise<BrowserResult> {
   if (env === "BROWSERBASE") {
     if (!apiKey) {
@@ -227,7 +229,7 @@ async function getBrowser(
       JSON.stringify(defaultPreferences),
     );
 
-    const downloadsPath = path.join(process.cwd(), "downloads");
+    const downloadsPath = downloadPath || path.join(process.cwd(), "downloads");
     fs.mkdirSync(downloadsPath, { recursive: true });
 
     const context = await chromium.launchPersistentContext(
@@ -235,6 +237,8 @@ async function getBrowser(
       {
         acceptDownloads: true,
         headless: headless,
+        executablePath,
+        downloadsPath,
         viewport: {
           width: 1250,
           height: 800,
@@ -327,6 +331,8 @@ export class Stagehand {
   private contextPath?: string;
   private llmClient: LLMClient;
   private userProvidedInstructions?: string;
+  public readonly executablePath?: string;
+  public readonly downloadPath?: string;
 
   constructor(
     {
@@ -346,6 +352,8 @@ export class Stagehand {
       modelName,
       modelClientOptions,
       systemPrompt,
+      executablePath,
+      downloadPath,
     }: ConstructorParams = {
       env: "BROWSERBASE",
     },
@@ -380,6 +388,8 @@ export class Stagehand {
     this.browserbaseSessionCreateParams = browserbaseSessionCreateParams;
     this.browserbaseSessionID = browserbaseSessionID;
     this.userProvidedInstructions = systemPrompt;
+    this.executablePath = executablePath;
+    this.downloadPath = downloadPath;
   }
 
   public get logger(): (logLine: LogLine) => void {
@@ -433,6 +443,8 @@ export class Stagehand {
         this.logger,
         this.browserbaseSessionCreateParams,
         this.browserbaseSessionID,
+        this.executablePath,
+        this.downloadPath,
       ).catch((e) => {
         console.error("Error in init:", e);
         const br: BrowserResult = {

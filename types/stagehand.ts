@@ -26,6 +26,16 @@ export interface ConstructorParams {
    * Instructions for stagehand.
    */
   systemPrompt?: string;
+  /**
+   * If you want to specify a particular path to a local Chrome/Chromium executable,
+   * provide it here. If omitted, defaults to Playwright's bundled Chromium.
+   */
+  executablePath?: string;
+  /**
+   * If you want downloaded files to go somewhere other than the default `./downloads`,
+   * specify a custom path here.
+   */
+  downloadPath?: string;
 }
 
 export interface InitOptions {

@@ -36,6 +36,15 @@ export interface ConstructorParams {
    * specify a custom path here.
    */
   downloadPath?: string;
+  /**
+   * Additional arguments to pass to the browser at launch time.
+   * These will be merged with Stagehand's default arguments.
+   * Each key-value pair will be transformed into a command line argument.
+   * For example, { proxyServer: "localhost:8080" } becomes --proxy-server=localhost:8080
+   * If the value is an empty string, only the flag is passed.
+   * For example, { noSandbox: "" } becomes --no-sandbox
+   */
+  browserArgs?: { [key: string]: string | boolean | number | null };
 }
 
 export interface InitOptions {

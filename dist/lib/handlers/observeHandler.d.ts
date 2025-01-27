@@ -6,7 +6,6 @@ export declare class StagehandObserveHandler {
     private readonly stagehand;
     private readonly logger;
     private readonly stagehandPage;
-    private readonly verbose;
     private observations;
     private readonly userProvidedInstructions?;
     constructor({ stagehand, logger, stagehandPage, userProvidedInstructions, }: {
@@ -16,10 +15,8 @@ export declare class StagehandObserveHandler {
         userProvidedInstructions?: string;
     });
     private _recordObservation;
-    observe({ instruction, useVision, fullPage, llmClient, requestId, useAccessibilityTree, }: {
+    observe({ instruction, llmClient, requestId, useAccessibilityTree, }: {
         instruction: string;
-        useVision: boolean;
-        fullPage: boolean;
         llmClient: LLMClient;
         requestId: string;
         domSettleTimeoutMs?: number;

@@ -35,6 +35,17 @@ export interface ConstructorParams {
      * specify a custom path here.
      */
     downloadPath?: string;
+    /**
+     * Additional arguments to pass to the browser at launch time.
+     * These will be merged with Stagehand's default arguments.
+     * Each key-value pair will be transformed into a command line argument.
+     * For example, { proxyServer: "localhost:8080" } becomes --proxy-server=localhost:8080
+     * If the value is an empty string, only the flag is passed.
+     * For example, { noSandbox: "" } becomes --no-sandbox
+     */
+    browserArgs?: {
+        [key: string]: string | boolean | number | null;
+    };
 }
 export interface InitOptions {
     /** @deprecated Pass this into the Stagehand constructor instead. This will be removed in the next major version. */
@@ -63,7 +74,8 @@ export interface ActOptions {
     action: string;
     modelName?: AvailableModel;
     modelClientOptions?: ClientOptions;
-    useVision?: "fallback" | boolean;
+    /** @deprecated Vision is not supported in this version of Stagehand. */
+    useVision?: boolean;
     variables?: Record<string, string>;
     domSettleTimeoutMs?: number;
 }
@@ -85,6 +97,7 @@ export interface ObserveOptions {
     instruction?: string;
     modelName?: AvailableModel;
     modelClientOptions?: ClientOptions;
+    /** @deprecated Vision is not supported in this version of Stagehand. */
     useVision?: boolean;
     domSettleTimeoutMs?: number;
     useAccessibilityTree?: boolean;

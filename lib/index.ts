@@ -50,6 +50,7 @@ async function getBrowser(
   browserbaseSessionID?: string,
   executablePath?: string,
   downloadPath?: string,
+  browserArgs?: { [key: string]: string | boolean | number | undefined | null },
 ): Promise<BrowserResult> {
   if (env === "BROWSERBASE") {
     if (!apiKey) {
@@ -232,6 +233,37 @@ async function getBrowser(
     const downloadsPath = downloadPath || path.join(process.cwd(), "downloads");
     fs.mkdirSync(downloadsPath, { recursive: true });
 
+    const baseBrowserArgs = {
+      enableWebgl: true,
+      useGl: "swiftshader",
+      enableAccelerated2dCanvas: true,
+      disableBlinkFeatures: "AutomationControlled",
+      disableWebSecurity: true,
+    };
+
+    const mergedBrowserArgs: {
+      [key: string]: string | boolean | number | null;
+    } = {
+      ...baseBrowserArgs,
+      ...browserArgs,
+    };
+
+    const browserArgsList: string[] = [];
+    for (const [key, value] of Object.entries(mergedBrowserArgs)) {
+      const transformedKey = key
+        .replace(/([a-z])([A-Z0-9])/g, "$1-$2")
+        .toLowerCase();
+      if (value === "" || value === true) {
+        browserArgsList.push(`--${transformedKey}`);
+      } else if (value !== null && value !== false) {
+        browserArgsList.push(`--${transformedKey}=${value}`);
+      }
+    }
+
+    console.info(
+      `initializing browser with args: ${browserArgsList.join(" ")}`,
+    );
+
     const context = await chromium.launchPersistentContext(
       path.join(tmpDir, "userdir"),
       {
@@ -246,13 +278,7 @@ async function getBrowser(
         locale: "en-US",
         timezoneId: "America/New_York",
         deviceScaleFactor: 1,
-        args: [
-          "--enable-webgl",
-          "--use-gl=swiftshader",
-          "--enable-accelerated-2d-canvas",
-          "--disable-blink-features=AutomationControlled",
-          "--disable-web-security",
-        ],
+        args: browserArgsList,
         bypassCSP: true,
       },
     );
@@ -333,7 +359,7 @@ export class Stagehand {
   private userProvidedInstructions?: string;
   public readonly executablePath?: string;
   public readonly downloadPath?: string;
-
+  public readonly browserArgs?: { [key: string]: string | boolean | number };
   constructor(
     {
       env,
@@ -354,6 +380,7 @@ export class Stagehand {
       systemPrompt,
       executablePath,
       downloadPath,
+      browserArgs,
     }: ConstructorParams = {
       env: "BROWSERBASE",
     },
@@ -390,6 +417,7 @@ export class Stagehand {
     this.userProvidedInstructions = systemPrompt;
     this.executablePath = executablePath;
     this.downloadPath = downloadPath;
+    this.browserArgs = browserArgs;
   }
 
   public get logger(): (logLine: LogLine) => void {
@@ -445,6 +473,7 @@ export class Stagehand {
         this.browserbaseSessionID,
         this.executablePath,
         this.downloadPath,
+        this.browserArgs,
       ).catch((e) => {
         console.error("Error in init:", e);
         const br: BrowserResult = {

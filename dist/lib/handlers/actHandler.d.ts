@@ -3,6 +3,11 @@ import { LLMClient } from "../llm/LLMClient";
 import { LLMProvider } from "../llm/LLMProvider";
 import { StagehandContext } from "../StagehandContext";
 import { StagehandPage } from "../StagehandPage";
+/**
+ * NOTE: Vision support has been removed from this version of Stagehand.
+ * If useVision or verifierUseVision is set to true, a warning is logged and
+ * the flow continues as if vision = false.
+ */
 export declare class StagehandActHandler {
     private readonly stagehandPage;
     private readonly verbose;
@@ -30,13 +35,11 @@ export declare class StagehandActHandler {
     private _checkIfCachedStepIsValid_oneXpath;
     private _getValidCachedStepXpath;
     private _runCachedActionIfAvailable;
-    act({ action, steps, chunksSeen, llmClient, useVision, verifierUseVision, retries, requestId, variables, previousSelectors, skipActionCacheForThisStep, domSettleTimeoutMs, }: {
+    act({ action, steps, chunksSeen, llmClient, retries, requestId, variables, previousSelectors, skipActionCacheForThisStep, domSettleTimeoutMs, }: {
         action: string;
         steps?: string;
         chunksSeen: number[];
         llmClient: LLMClient;
-        useVision: boolean | "fallback";
-        verifierUseVision: boolean;
         retries?: number;
         requestId?: string;
         variables: Record<string, string>;

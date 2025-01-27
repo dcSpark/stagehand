@@ -1,11 +1,9 @@
-import { Buffer } from "buffer";
 import { LLMClient } from "../lib/llm/LLMClient";
 export interface ActCommandParams {
     action: string;
     steps?: string;
     domElements: string;
     llmClient: LLMClient;
-    screenshot?: Buffer;
     retries?: number;
     logger: (message: {
         category?: string;

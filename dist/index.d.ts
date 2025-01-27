@@ -159,6 +159,17 @@ interface ConstructorParams {
      * specify a custom path here.
      */
     downloadPath?: string;
+    /**
+     * Additional arguments to pass to the browser at launch time.
+     * These will be merged with Stagehand's default arguments.
+     * Each key-value pair will be transformed into a command line argument.
+     * For example, { proxyServer: "localhost:8080" } becomes --proxy-server=localhost:8080
+     * If the value is an empty string, only the flag is passed.
+     * For example, { noSandbox: "" } becomes --no-sandbox
+     */
+    browserArgs?: {
+        [key: string]: string | boolean | number | null;
+    };
 }
 interface InitOptions {
     /** @deprecated Pass this into the Stagehand constructor instead. This will be removed in the next major version. */
@@ -187,7 +198,8 @@ interface ActOptions {
     action: string;
     modelName?: AvailableModel;
     modelClientOptions?: ClientOptions;
-    useVision?: "fallback" | boolean;
+    /** @deprecated Vision is not supported in this version of Stagehand. */
+    useVision?: boolean;
     variables?: Record<string, string>;
     domSettleTimeoutMs?: number;
 }
@@ -209,6 +221,7 @@ interface ObserveOptions {
     instruction?: string;
     modelName?: AvailableModel;
     modelClientOptions?: ClientOptions;
+    /** @deprecated Vision is not supported in this version of Stagehand. */
     useVision?: boolean;
     domSettleTimeoutMs?: number;
     useAccessibilityTree?: boolean;
@@ -285,7 +298,10 @@ declare class Stagehand {
     private userProvidedInstructions?;
     readonly executablePath?: string;
     readonly downloadPath?: string;
-    constructor({ env, apiKey, projectId, verbose, debugDom, llmProvider, llmClient, headless, logger, browserbaseSessionCreateParams, domSettleTimeoutMs, enableCaching, browserbaseSessionID, modelName, modelClientOptions, systemPrompt, executablePath, downloadPath, }?: ConstructorParams);
+    readonly browserArgs?: {
+        [key: string]: string | boolean | number;
+    };
+    constructor({ env, apiKey, projectId, verbose, debugDom, llmProvider, llmClient, headless, logger, browserbaseSessionCreateParams, domSettleTimeoutMs, enableCaching, browserbaseSessionID, modelName, modelClientOptions, systemPrompt, executablePath, downloadPath, browserArgs, }?: ConstructorParams);
     get logger(): (logLine: LogLine) => void;
     get page(): Page;
     get env(): "LOCAL" | "BROWSERBASE";

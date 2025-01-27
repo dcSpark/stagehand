@@ -26,7 +26,10 @@ export declare class Stagehand {
     private userProvidedInstructions?;
     readonly executablePath?: string;
     readonly downloadPath?: string;
-    constructor({ env, apiKey, projectId, verbose, debugDom, llmProvider, llmClient, headless, logger, browserbaseSessionCreateParams, domSettleTimeoutMs, enableCaching, browserbaseSessionID, modelName, modelClientOptions, systemPrompt, executablePath, downloadPath, }?: ConstructorParams);
+    readonly browserArgs?: {
+        [key: string]: string | boolean | number;
+    };
+    constructor({ env, apiKey, projectId, verbose, debugDom, llmProvider, llmClient, headless, logger, browserbaseSessionCreateParams, domSettleTimeoutMs, enableCaching, browserbaseSessionID, modelName, modelClientOptions, systemPrompt, executablePath, downloadPath, browserArgs, }?: ConstructorParams);
     get logger(): (logLine: LogLine) => void;
     get page(): Page;
     get env(): "LOCAL" | "BROWSERBASE";
